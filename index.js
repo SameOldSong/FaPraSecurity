@@ -18,7 +18,7 @@ app.listen(port, () => {            //server starts listening for any attempts f
 
 
 app.get('/clicked', (req, res) => {
-  const click = 1 + Math.floor(Math.random() * 3);
+  const click = 1 + Math.floor(Math.random() * 6);
   console.log(click);
   var params = [click];
  
