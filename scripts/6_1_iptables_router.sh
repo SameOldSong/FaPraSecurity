@@ -15,18 +15,6 @@ kathara exec routerdmz -- iptables -t nat -A PREROUTING -i eth1 -p tcp --dport $
 kathara exec server1 -- service haproxy restart
 
 
-#echo "ADJUSTING  IPTABLES"
-#kathara exec server1 -- iptables -A INPUT -p tcp --dport 80 -s 192.168.1.1 -j ACCEPT
-
-#kathara exec server1 -- iptables -A INPUT -p tcp --sport 5000 -s 192.168.1.12 -j ACCEPT
-
-#kathara exec server1 -- iptables -A OUTPUT -p tcp --sport 80 -d 192.168.1.11 -m state --state ESTABLISHED -j ACCEPT
-
-#kathara exec server1 -- iptables -A OUTPUT -p tcp --sport 3306 -d 192.168.1.12 -m state --state ESTABLISHED -j ACCEPT
-
-#kathara exec server1 -- iptables -P OUTPUT DROP
-#kathara exec server1 -- iptables -P INPUT DROP
-#kathara exec server1 -- iptables -P FORWARD DROP
 
 
 #echo "PERSISTING  IPTABLES"
