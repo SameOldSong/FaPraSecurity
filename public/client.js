@@ -10,7 +10,7 @@ button.addEventListener('click', function(e) {
       throw new Error('Request failed.');
     })
     .then(function(data) {
-      document.getElementById('result').innerHTML = `${data[0].content}`;
+      document.getElementById('result').innerHTML = `${data[0].quote}`;
     })
     .catch(function(error) {
       console.log(error);
