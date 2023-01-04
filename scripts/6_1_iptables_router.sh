@@ -1,22 +1,5 @@
 #!/bin/bash
 
-echo "UPGRADING apt-get"
-kathara exec server1 -- apt-get update -y
-kathara exec server1 -- apt-get upgrade -y
-
-echo "IPTABLES-PERSISTENT"
-kathara exec server1 -- apt-get -o Dpkg::Options::="--force-confold" -y install iptables-persistent
-
-echo "HAPROXY INSTALL"
-kathara exec server1 -- apt-get -o Dpkg::Options::="--force-confold" -y install haproxy
-
-
-echo "HAPROXY CONFIGURE ROUTING TO WEBSERVER"
-
-kathara exec server1 -- /bin/bash -c "echo -e 'frontend fapraweb\n  bind :80\n  mode http\n  acl url_fapraweb path /fapraweb\n  default_backend fapraweb_webserver\n  use_backend fapraweb_webserver if url_fapraweb\n  redirect code 301 location / if url_fapraweb\n\nbackend fapraweb_webserver\n  mode http\n  balance roundrobin\n  server webserver1 192.168.1.12:5000'  >> /etc/haproxy/haproxy.cfg"
-
-kathara exec server1 -- service haproxy restart
-
 
 echo "FORWARDING OVER ROUTERDMZ"
 port=80
