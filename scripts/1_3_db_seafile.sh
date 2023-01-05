@@ -2,7 +2,7 @@
 
 
 echo "CREATING DB USER for seafile"
-kathara exec database -- mariadb -e "CREATE USER seafile@192.168.1.11 IDENTIFIED VIA ed25519 USING PASSWORD('N0=22Sy-Fa?42');"
+kathara exec database -- mariadb -e "CREATE USER seafile@192.168.1.11 VIA mysql_native_password USING PASSWORD('N0=22Sy-Fa?42');"
 
 echo "CREATING DATABASES for seafile"
 kathara exec database -- mariadb -e "create database ccnet_db character set = utf8;"
