@@ -23,9 +23,9 @@ app.get('/clicked', (req, res) => {
   var params = [click];
  
   const pool = mariadb.createPool({
-     host: '192.168.1.13',
-     user:'fapraweb',
-     password: '%gQ-22Fa?Wh5',
+     host: process.env.DB_HOST,
+     user: process.env.DB_USER,
+     password: process.env.DB_PWD,
      connectionLimit: 5
 });
 
