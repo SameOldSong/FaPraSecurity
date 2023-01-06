@@ -30,5 +30,5 @@ kathara exec webserver -- sh -c "cd /var/www; git clone https://github.com/SameO
 
 kathara exec webserver -- sh -c "chmod u+x /var/www/fapraweb/index.js;chmod u+x /var/www/fapraweb/public/client.js;"
 
-kathara exec webserver -- sh -c "cd /var/www/fapraweb; pm2 start index.js"
+kathara exec webserver -- sh -c "cd /var/www/fapraweb; DB_HOST=192.168.1.13 DB_USER=fapraweb DB_PWD=%gQ-22Fa?Wh5 pm2 start index.js --update-env"
 
