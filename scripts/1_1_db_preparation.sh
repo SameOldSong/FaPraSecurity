@@ -29,4 +29,5 @@ kathara exec database -- mariadb -e "DROP DATABASE IF EXISTS test;"
 
 kathara exec database -- mariadb -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';"
 
+kathara exec database -- mariadb -e "FLUSH PRIVILEGES;"
 
