@@ -28,7 +28,7 @@ mariadb
  .createConnection({
    host: 'database', 
    ssl: {
-	//only for TESTING, not for PRODUCTION!!!
+	//only for TESTING! comment this out for PRODUCTION when using CA signed certificates!!!
 	rejectUnauthorized: false,
 	
 	ca: serverCert,
@@ -49,8 +49,8 @@ mariadb
 		 console.log("something wrong with query"); 
 		 console.log(error);
 	 });
- }).catch(error => { console.log(error); console.log("something wrong with connection");});
-
-
+ }).catch(error => { 
+	console.log(error); 
+	console.log("something wrong with connection");});
 });
 
