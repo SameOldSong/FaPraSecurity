@@ -1,6 +1,6 @@
 #!/bin/bash
 
-kathara exec routerdmz -- iptables -t nat -A POSTROUTING -j MASQUERADE 
+
 
 echo "UPGRADING apt-get"
 kathara exec database -- apt-get update -y
