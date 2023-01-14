@@ -9,9 +9,6 @@ kathara exec database -- apt-get upgrade -y
 echo "SYSTEMCTL"
 kathara exec database -- apt-get -o Dpkg::Options::="--force-confold" -y install systemctl
 
-echo "IPTABLES-PERSISTENT"
-kathara exec database -- apt-get -o Dpkg::Options::="--force-confold" -y install iptables-persistent
-
 
 echo "MARIADB INSTALLATION"
 kathara exec database -- apt-get -o Dpkg::Options::="--force-confold" -y install mariadb-server
