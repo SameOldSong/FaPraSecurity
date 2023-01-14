@@ -34,10 +34,14 @@ defaults
 	errorfile 504 /etc/haproxy/errors/504.http
 frontend fapraweb
   bind :80
-  bind :443 ssl crt /etc/ssl/private/full.pem
+  bind :443 ssl crt /root/FaPraSecurity/certs/full.pem
   mode http
   redirect scheme https if !{ ssl_fc }
+  #acl url_fapraweb path /fapraweb
   default_backend fapraweb_webserver
+  #use_backend fapraweb_webserver if url_fapraweb
+  #redirect code 301 location / if url_fapraweb
+
 
 backend fapraweb_webserver
   mode http
