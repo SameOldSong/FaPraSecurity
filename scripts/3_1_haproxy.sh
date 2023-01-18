@@ -4,9 +4,6 @@ echo "UPGRADING apt-get"
 kathara exec server1 -- apt-get update -y
 kathara exec server1 -- apt-get upgrade -y
 
-echo "IPTABLES-PERSISTENT"
-kathara exec server1 -- apt-get -o Dpkg::Options::="--force-confold" -y install iptables-persistent
-
 echo "HAPROXY INSTALL"
 kathara exec server1 -- apt-get -o Dpkg::Options::="--force-confold" -y install haproxy
 
