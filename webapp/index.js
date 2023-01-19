@@ -5,7 +5,7 @@ const fs = require('fs');
 const app = express();
 const httpsPort = 5000;
 const dbServerCert = [fs.readFileSync("/etc/ssl/certs/dbserver-cert.pem"), "utf8"];
-app.use(express.static('/var/www/fapraweb/webapp/public'));
+app.use(express.static('/var/www/fapraweb/public'));
 
 const dbClientKey = [fs.readFileSync("/etc/ssl/private/dbclient-key.pem")];
 const dbClientCert = [fs.readFileSync("/etc/ssl/certs/dbclient-cert.pem")];
