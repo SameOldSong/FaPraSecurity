@@ -3,28 +3,19 @@ const mariadb = require('mariadb');
 const fs = require('fs');
 const app = express();
 const port = 5000;
-const dbServerCert = [fs.readFileSync("/var/www/fapraweb/dbserver-cert.pem"), "utf8"];
+const serverCert = [fs.readFileSync("/var/www/fapraweb/server-cert.pem"), "utf8"];
 app.use(express.static('/var/www/fapraweb/webapp/public'));
 
-const dbClientKey = [fs.readFileSync("/var/www/fapraweb/dbclient-key.pem")];
-const dbClientCert = [fs.readFileSync("/var/www/fapraweb/dbclient-cert.pem")];
+const clientKey = [fs.readFileSync("/var/www/fapraweb/client-key.pem")];
+const clientCert = [fs.readFileSync("/var/www/fapraweb/client-cert.pem")];
 
-var key = fs.readFileSync(__dirname + '/certsFiles/selfsigned.key');
-var cert = fs.readFileSync(__dirname + '/certsFiles/selfsigned.crt');
-
-var credentials = {
-  key: key,
-  cert: cert
-};
-
+//Idiomatic expression in express to route and respond to a client request
 app.get('/', (req, res) => {        
     res.sendFile('index.html', {root: __dirname});     
 });
 
-var httpsServer = https.createServer(credentials, app);
-
-httpsServer.listen(httpsPort, () => {
-  console.log("Https server listing on port : " + httpsPort)
+app.listen(port, () => {            
+    console.log(`Now listening on port ${port}`); 
 });
 
 
@@ -40,9 +31,9 @@ mariadb
 	//only for TESTING! comment this out for PRODUCTION when using CA signed certificates!!!
 	rejectUnauthorized: false,
 	
-	ca: dbServerCert,
-	cert: dbClientCert,
-	key: dbClientKey
+	ca: serverCert,
+	cert: clientCert,
+	key: clientKey
    }, 
    user: 'fapraweb'
  }).then(conn => {
