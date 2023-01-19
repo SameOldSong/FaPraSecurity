@@ -3,14 +3,14 @@ const mariadb = require('mariadb');
 const fs = require('fs');
 const app = express();
 const port = 5000;
-const dbServerCert = [fs.readFileSync("/var/www/fapraweb/dbserver-cert.pem"), "utf8"];
+const dbServerCert = [fs.readFileSync("/etc/ssl/certs/dbserver-cert.pem"), "utf8"];
 app.use(express.static('/var/www/fapraweb/webapp/public'));
 
-const dbClientKey = [fs.readFileSync("/var/www/fapraweb/dbclient-key.pem")];
-const dbClientCert = [fs.readFileSync("/var/www/fapraweb/dbclient-cert.pem")];
+const dbClientKey = [fs.readFileSync("/etc/ssl/private/dbclient-key.pem")];
+const dbClientCert = [fs.readFileSync("/etc/ssl/certs/dbclient-cert.pem")];
 
-var key = fs.readFileSync(__dirname + '/certsFiles/selfsigned.key');
-var cert = fs.readFileSync(__dirname + '/certsFiles/selfsigned.crt');
+var key = fs.readFileSync("/etc/ssl/private/selfsigned.key");
+var cert = fs.readFileSync("/etc/ssl/certs/selfsigned.crt");
 
 var credentials = {
   key: key,
