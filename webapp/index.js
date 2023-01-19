@@ -4,7 +4,7 @@ const https = require('https');
 const fs = require('fs');
 const app = express();
 const httpsPort = 5000;
-const dbServerCert = [fs.readFileSync("/etc/ssl/certs/dbserver-cert.pem"), "utf8"];
+const dbCaCert = [fs.readFileSync("/etc/ssl/certs/ca.pem"), "utf8"];
 app.use(express.static('/var/www/fapraweb/public'));
 
 const dbClientKey = [fs.readFileSync("/etc/ssl/private/dbclient-key.pem")];
@@ -41,7 +41,7 @@ mariadb
 	//only for TESTING! comment this out for PRODUCTION when using CA signed certificates!!!
 	rejectUnauthorized: false,
 	
-	ca: dbServerCert,
+	ca: dbCaCert,
 	cert: dbClientCert,
 	key: dbClientKey
    }, 
