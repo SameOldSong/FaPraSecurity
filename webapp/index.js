@@ -10,8 +10,8 @@ app.use(express.static('/var/www/fapraweb/public'));
 const dbClientKey = [fs.readFileSync("/etc/ssl/private/dbclient-key.pem")];
 const dbClientCert = [fs.readFileSync("/etc/ssl/certs/dbclient-cert.pem")];
 
-var key = fs.readFileSync("/etc/ssl/private/selfsigned.key");
-var cert = fs.readFileSync("/etc/ssl/certs/selfsigned.crt");
+var key = fs.readFileSync("/etc/ssl/private/webkey.pem");
+var cert = fs.readFileSync("/etc/ssl/certs/webcert.pem");
 
 var credentials = {
   key: key,
