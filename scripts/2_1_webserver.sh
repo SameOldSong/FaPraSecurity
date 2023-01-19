@@ -17,7 +17,7 @@ kathara exec webserver -- apt-get -o Dpkg::Options::="--force-confold" -y instal
 
 echo "NPM PACKAGES"
 kathara exec webserver -- sh -c "mkdir -p /var/www/fapraweb"
-kathara exec webserver -- sh -c "cd /var/www/fapraweb;npm install express mariadb fs"
+kathara exec webserver -- sh -c "cd /var/www/fapraweb;npm install express mariadb fs https"
 kathara exec webserver -- sh -c "npm install pm2 -g"
 
 echo "INSTALL GIT"
