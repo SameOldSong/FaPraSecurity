@@ -3,7 +3,7 @@ const mariadb = require('mariadb');
 const https = require('https');
 const fs = require('fs');
 const app = express();
-const port = 5000;
+const httpsPort = 5000;
 const dbServerCert = [fs.readFileSync("/etc/ssl/certs/dbserver-cert.pem"), "utf8"];
 app.use(express.static('/var/www/fapraweb/webapp/public'));
 
