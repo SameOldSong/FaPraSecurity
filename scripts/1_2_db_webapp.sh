@@ -35,11 +35,28 @@ kathara exec database -- apt-get -o Dpkg::Options::="--force-confold" -y install
 echo "FOLDER for certificates"
 kathara exec database -- mkdir -p /etc/my.cnf.d/certificates/
 
-echo "Create CA KEYS"
+echo "Create CA private key"
 kathara exec database -- /bin/bash -c "cd /etc/my.cnf.d/certificates/; openssl genrsa 4096 > ca-key.pem"
 
+echo "Create CA CERTIFICATE"
+kathara exec database -- /bin/bash -c "cd /etc/my.cnf.d/certificates/; openssl req -new -x509 -nodes -days 365 -key ca-key.pem -out ca.pem -subj '/C=DE/ST=BW/L=Stuttgart/O=FaPra/CN=database'"
 
-kathara exec server1 -- /bin/bash -c "echo -e 'frontend fapraweb\n  bind :80\n  mode http\n  acl url_fapraweb path /fapraweb\n  default_backend fapraweb_webserver\n  use_backend fapraweb_webserver if url_fapraweb\n  redirect code 301 location / if url_fapraweb\n\nbackend fapraweb_webserver\n  mode http\n  balance roundrobin\n  server webserver1 192.168.1.12:5000'  >> /etc/haproxy/haproxy.cfg"
+echo "Create MARIADB private key"
+kathara exec database -- /bin/bash -c "cd /etc/my.cnf.d/certificates/; openssl req -newkey rsa:4096 -days 365 -nodes -keyout dbserver-key.pem -out
+dbserver-req.pem -subj '/C=DE/ST=BW/L=Stuttgart/O=FaPra/CN=MariaDB'"
+
+kathara exec database -- /bin/bash -c "cd /etc/my.cnf.d/certificates/; openssl rsa -in dbserver-key.pem -out dbserver-key.pem"
+
+echo "Create MariaDB CERTIFICATE"
+
+kathara exec database -- /bin/bash -c "cd /etc/my.cnf.d/certificates/; openssl x509 -req -in dbserver-req.pem -days 365 -CA ca.pem -CAkey ca-key.pem -set_serial 01 -out dbserver-cert.pem"
+
+kathara exec database -- chmod -R 600 /etc/my.cnf.d/certificates/
+
+echo "Change MARIADB configuration"
+kathara exec database -- apt-get -o Dpkg::Options::="--force-confold" -y install git
+kathara exec database -- /bin/bash -c "git clone https://github.com/SameOldSong/FaPraSecurity.git;cp FaPraSecurity/mariadb/50-server.cnf /etc/mysql/mariadb.conf.d/; rm -r FaPraSecurity"
+
 
 
 kathara exec database -- service mariadb restart
