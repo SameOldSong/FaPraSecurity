@@ -110,9 +110,9 @@ collation-server      = utf8mb4_general_ci
 # If you use the same .cnf file for MySQL and MariaDB,
 # you can put MariaDB-only options here
 [mariadb]
-ssl_cert = /etc/ssl/certs/maria/dbserver-cert.pem
-ssl_key = /etc/ssl/certs/maria/dbserver-key.pem
-ssl_ca = /etc/ssl/certs/maria/ca.pem
+ssl_cert = /etc/my.cnf.d/certificates/server-cert.pem
+ssl_key = /etc/my.cnf.d/certificates/dbserver-key.pem
+ssl_ca = /etc/my.cnf.d/certificates/ca.pem
 
 # This group is only read by MariaDB-10.5 servers.
 # If you use the same .cnf file for MariaDB of different versions,
