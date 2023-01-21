@@ -5,14 +5,10 @@ kathara exec webserver -- apt-get update -y
 kathara exec webserver -- apt-get upgrade -y
 
 
-###kathara exec webserver -- sh -c "useradd-s /bin/bash -m -d /home/fapraweb fapraweb;usermod -aG sudo fapraweb"
-
-#####kathara exec webserver -- sh -c "useradd fapraweb; echo 'fapraweb:h3-fA22§Wh-y' | chpasswd;usermod -aG sudo fapraweb"
-
-echo "NODEJS"
+echo "NODEJS installation"
 kathara exec webserver -- apt-get -o Dpkg::Options::="--force-confold" -y install nodejs
 
-echo "NPM"
+echo "NPM installation"
 kathara exec webserver -- apt-get -o Dpkg::Options::="--force-confold" -y install npm
 
 echo "NPM PACKAGES"
@@ -20,7 +16,7 @@ kathara exec webserver -- sh -c "mkdir -p /var/www/fapraweb"
 kathara exec webserver -- sh -c "cd /var/www/fapraweb;npm install express mariadb fs https"
 kathara exec webserver -- sh -c "npm install pm2 -g"
 
-echo "INSTALL GIT"
+echo "GIT installation"
 kathara exec webserver -- apt-get -o Dpkg::Options::="--force-confold" -y install git
 
 echo "DOWNLOAD WEB PROJECT FROM GIT"
