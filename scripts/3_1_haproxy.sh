@@ -8,40 +8,34 @@ echo "HAPROXY INSTALL"
 kathara exec server1 -- apt-get -o Dpkg::Options::="--force-confold" -y install haproxy
 
 
-echo "HAPROXY CONFIGURE ROUTING TO WEBSERVER"
+echo "HAPROXY DOWNLOAD CONFIG file from Git"
 
-kathara exec server1 -- /bin/bash -c "echo -e 'frontend fapraweb\n  bind :80\n  mode http\n  acl url_fapraweb path /fapraweb\n  default_backend fapraweb_webserver\n  use_backend fapraweb_webserver if url_fapraweb\n  redirect code 301 location / if url_fapraweb\n\nbackend fapraweb_webserver\n  mode http\n  balance roundrobin\n  server webserver1 192.168.1.12:5000'  >> /etc/haproxy/haproxy.cfg"
+kathara exec server1 --  apt-get -o Dpkg::Options::="--force-confold" -y install git
+
+kathara exec server1 -- /bin/bash -c "git clone https://github.com/SameOldSong/FaPraSecurity.git;cp FaPraSecurity/haproxy.cfg /etc/haproxy/;rm -r FaPraSecurity"
+
+echo "HAPROXY generate CERTIFICATE for WEB CLIENT"
+
+kathara exec server1 -- /bin/bash -c "openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -nodes -days 30 -subj '/C=DE/ST=BW/L=Stuttgart/O=FaPra/CN=server1'; cat cert.pem key.pem > /etc/ssl/private/full_ha.pem; chmod -R 644 /etc/ssl/private/full_ha.pem; rm cert.pem; rm key.pem"
+
+echo "COPY CERTIFICATE from webserver"
+kathara exec server1 -- apt-get -o Dpkg::Options::="--force-confold" -y install sshpass
+kathara exec server1 -- sshpass -p 'scppwd' scp -o StrictHostKeyChecking=no scpu@192.168.1.12:/home/scpu/webcert.pem /etc/ssl/certs/
+
+kathara exec server1 -- chmod 644 /etc/ssl/certs/webcert.pem
+
+
+echo "CLEAN UP scp user and temp certificates on WEBSERVER"
+kathara exec webserver -- /bin/bash -c  "rm -r /home/scpu/*"
+kathara exec webserver -- /bin/bash -c  "deluser scpu"
+
+
+
 
 kathara exec server1 -- service haproxy restart
 
 
-echo "FORWARDING OVER ROUTERDMZ"
-port=80
-server=192.168.1.10
-echo "Forwarding PORT ${port} on ROUTERDMZ to SERVER ${server}"
-
-kathara exec routerdmz -- iptables -A FORWARD -i eth1 -o eth0 -p tcp --syn --dport $port -m conntrack --ctstate NEW -j ACCEPT
-
-kathara exec routerdmz -- iptables -A FORWARD -i eth0 -o eth1 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-
-kathara exec routerdmz -- iptables -t nat -A PREROUTING -i eth1 -p tcp --dport $port -j DNAT --to-destination $server
-
-kathara exec server1 -- service haproxy restart
 
 
-#echo "ADJUSTING  IPTABLES"
-#kathara exec server1 -- iptables -A INPUT -p tcp --dport 80 -s 192.168.1.1 -j ACCEPT
-
-#kathara exec server1 -- iptables -A INPUT -p tcp --sport 5000 -s 192.168.1.12 -j ACCEPT
-
-#kathara exec server1 -- iptables -A OUTPUT -p tcp --sport 80 -d 192.168.1.11 -m state --state ESTABLISHED -j ACCEPT
-
-#kathara exec server1 -- iptables -A OUTPUT -p tcp --sport 3306 -d 192.168.1.12 -m state --state ESTABLISHED -j ACCEPT
-
-#kathara exec server1 -- iptables -P OUTPUT DROP
-#kathara exec server1 -- iptables -P INPUT DROP
-#kathara exec server1 -- iptables -P FORWARD DROP
 
 
-#echo "PERSISTING  IPTABLES"
-#kathara exec server1 -- /bin/sh -c "iptables-save > /etc/iptables/rules.v4"

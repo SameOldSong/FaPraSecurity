@@ -60,11 +60,31 @@ kathara exec database -- /bin/bash -c  "rm -r /home/scpu/*"
 kathara exec database -- /bin/bash -c  "deluser scpu"
 
 
-echo "CERTIFICATE for HAPROXY"
-kathara exec webserver -- /bin/bash -c "openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/webkey.pem -out /etc/ssl/certs/webcert.pem -sha256 -nodes -days 30 -subj '/C=DE/ST=BW/L=Stuttgart/O=FaPra/CN=webserver'"
 
-kathara exec webserver -- chmod 600 /etc/ssl/certs/webcert.pem
-kathara exec webserver -- chmod 644 /etc/ssl/private/webkey.pem
 
 echo "START WEB APP"
 kathara exec webserver -- /bin/bash -c "cd /var/www/fapraweb; pm2 start index.js"
+
+echo "CERTIFICATE for HAPROXY"
+kathara exec webserver -- /bin/bash -c "openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/webkey.pem -out /etc/ssl/certs/webcert.pem -sha256 -nodes -days 30 -subj '/C=DE/ST=BW/L=Stuttgart/O=FaPra/CN=webserver'"
+
+kathara exec webserver -- chmod 644 /etc/ssl/certs/webcert.pem
+kathara exec webserver -- chmod 600 /etc/ssl/private/webkey.pem
+
+
+echo "Install OPENSSH to enable HAPROXY to copy certificate"
+
+#weird workaround that somehow works around error setting up systemd
+kathara exec webserver -- apt-get -yq -o Dpkg::Options::="--force-confold" dist-upgrade
+kathara exec webserver -- /bin/bash -c "TERM=linux DEBIAN_FRONTEND=noninteractive apt-get install -yq -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold'  openssh-server"
+
+echo "START SSH service"
+kathara exec webserver -- service ssh start
+
+echo "TEMPORARY USER for SCP to copy stuff to HAPROXY"
+kathara exec webserver -- useradd -m scpu
+kathara exec webserver -- sh -c "echo 'scpu:scppwd' |  chpasswd"
+
+kathara exec webserver -- cp /etc/ssl/certs/webcert.pem /home/scpu/
+kathara exec webserver -- chown -R scpu /home/scpu
+kathara exec webserver -- chmod 755 -R /home/scpu
