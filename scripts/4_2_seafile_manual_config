@@ -1,0 +1,21 @@
+run this script
+
+/opt/seafile/seafile-server-9.0.9/setup-seafile-mysql.sh
+
+There will be several prompts, enter these values:
+
+Servername                            |   Seafile
+Server IP oder Domäne                 |   192.168.1.11
+Seafile port                          |   8082
+Neue Datenbank erstellen (1) oder     |   2
+existierende benutzen(2)
+MySQL Server                          |   192.168.1.13
+MySQL Server port 3306
+MySQL Benutzer                        |   seafile
+
+MySQL Passwort Passwort               |
+von seafile in MariaDB                |   N0=22Sy-Fa?42
+
+ccnet Datenbank                       |   ccnet_db
+seafile Datenbank                     |   seafile_db
+seahub Datenbank                      |   seahub_db
