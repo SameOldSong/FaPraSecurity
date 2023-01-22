@@ -22,8 +22,8 @@ kathara exec database -- mariadb -e "INSERT INTO fapraweb.quotes (quote) VALUES(
 
 
 
-echo "CREATING USER for web app"
-#kathara exec database -- mariadb -e "CREATE USER fapraweb@192.168.1.12 IDENTIFI#ED VIA ed25519 USING PASSWORD('%gQ-22Fa?Wh5');"
+#echo "CREATING USER for web app" -- OBSOLETE, authentication over SSL certificates
+#kathara exec database -- mariadb -e "CREATE USER fapraweb@192.168.1.12 IDENTIFIED VIA ed25519 USING PASSWORD('%gQ-22Fa?Wh5');"
 
 kathara exec database -- mariadb -e "CREATE USER 'fapraweb'@'192.168.1.12';"
 kathara exec database -- mariadb -e "GRANT ALL PRIVILEGES ON fapraweb.* TO 'fapraweb'@'192.168.1.12' REQUIRE X509;"
