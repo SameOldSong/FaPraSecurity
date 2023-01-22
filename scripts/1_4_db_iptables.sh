@@ -1,7 +1,6 @@
 #!/bin/bash
 
 
-
 echo "ADJUSTING  IPTABLES on DATABASE server"
 kathara exec database -- iptables -A INPUT -p tcp --dport 3306 -s 192.168.1.12 -j ACCEPT
  
@@ -16,11 +15,9 @@ kathara exec database -- iptables -P INPUT DROP
 kathara exec database -- iptables -P FORWARD DROP
 
 
-echo "IPTABLES-PERSISTENT installation"
-kathara exec database -- apt-get -o Dpkg::Options::="--force-confold" -y install iptables-persistent
 
 echo "PERSISTING  IPTABLES on DATABASE server"
-kathara exec database -- /bin/sh -c "iptables-save > /etc/iptables/rules.v4"
+kathara exec database -- /bin/sh -c "/sbin/iptables-save > /etc/iptables/rules.v4"
 
 
 

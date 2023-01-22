@@ -33,30 +33,34 @@ echo "OPENSSL installation"
 kathara exec database -- apt-get -o Dpkg::Options::="--force-confold" -y install openssl
 
 echo "FOLDER for certificates"
-kathara exec database -- mkdir -p /etc/my.cnf.d/certificates/
+kathara exec database -- /bin/bash -c "mkdir -p /etc/my.cnf.d/certificates"
 
 echo "Create CA private key"
-kathara exec database -- /bin/bash -c "cd /etc/my.cnf.d/certificates/; openssl genrsa 4096 > ca-key.pem"
+kathara exec database -- /bin/bash -c "cd /etc/my.cnf.d/certificates; openssl genrsa 4096 > ca-key.pem"
 
 echo "Create CA CERTIFICATE"
-kathara exec database -- /bin/bash -c "cd /etc/my.cnf.d/certificates/; openssl req -new -x509 -nodes -days 365 -key ca-key.pem -out ca.pem -subj '/C=DE/ST=BW/L=Stuttgart/O=FaPra/CN=database'"
+kathara exec database -- /bin/bash -c "cd /etc/my.cnf.d/certificates; openssl req -new -x509 -nodes -days 365 -key ca-key.pem -out ca.pem -subj '/C=DE/ST=BW/L=Stuttgart/O=FaPra/CN=database'"
 
 echo "Create MARIADB private key"
-kathara exec database -- /bin/bash -c "cd /etc/my.cnf.d/certificates/; openssl req -newkey rsa:4096 -days 365 -nodes -keyout dbserver-key.pem -out
-dbserver-req.pem -subj '/C=DE/ST=BW/L=Stuttgart/O=FaPra/CN=MariaDB'"
+kathara exec database -- /bin/bash -c "cd /etc/my.cnf.d/certificates; openssl req -newkey rsa:4096 -days 365 -nodes -keyout dbserver-key.pem -out dbserver-req.pem -subj '/C=DE/ST=BW/L=Stuttgart/O=FaPra/CN=maria'"
 
-kathara exec database -- /bin/bash -c "cd /etc/my.cnf.d/certificates/; openssl rsa -in dbserver-key.pem -out dbserver-key.pem"
+kathara exec database -- /bin/bash -c "cd /etc/my.cnf.d/certificates; openssl rsa -in dbserver-key.pem -out dbserver-key.pem"
 
 echo "Create MariaDB CERTIFICATE"
 
-kathara exec database -- /bin/bash -c "cd /etc/my.cnf.d/certificates/; openssl x509 -req -in dbserver-req.pem -days 365 -CA ca.pem -CAkey ca-key.pem -set_serial 01 -out dbserver-cert.pem"
+kathara exec database -- /bin/bash -c "cd /etc/my.cnf.d/certificates; openssl x509 -req -in dbserver-req.pem -days 365 -CA ca.pem -CAkey ca-key.pem -set_serial 01 -out dbserver-cert.pem"
 
-kathara exec database -- chmod -R 600 /etc/my.cnf.d/certificates/
+echo "Set certificates PERMISSIONS and ownership"
+
+kathara exec database -- chown -R mysql:mysql /etc/my.cnf.d
+kathara exec database -- chmod 600 /etc/my.cnf.d/certificates/ca-key.pem
+kathara exec database -- chmod 600 /etc/my.cnf.d/certificates/dbserver-key.pem
+kathara exec database -- chmod 644 /etc/my.cnf.d/certificates/ca.pem
+kathara exec database -- chmod 644 /etc/my.cnf.d/certificates/dbserver-cert.pem
 
 echo "Change MARIADB configuration"
 kathara exec database -- apt-get -o Dpkg::Options::="--force-confold" -y install git
 kathara exec database -- /bin/bash -c "git clone https://github.com/SameOldSong/FaPraSecurity.git;cp FaPraSecurity/mariadb/50-server.cnf /etc/mysql/mariadb.conf.d/; rm -r FaPraSecurity"
-
 
 
 kathara exec database -- service mariadb restart
