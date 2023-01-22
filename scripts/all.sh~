@@ -1,7 +1,0 @@
-#!/bin/bash
-
-sh 0_0_wipe_lab.sh
-sh 0_1_routerdmz_masquerade.sh
-sh 1_1_db_preparation.sh
-sh 1_2_db_webapp.sh
-sh 1_3_db_seafile.sh
