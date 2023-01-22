@@ -71,14 +71,19 @@ echo "OPENSSH SERVER installation for certificates transfer to webserver"
 kathara exec database -- apt-get -yq -o Dpkg::Options::="--force-confold" dist-upgrade 
 kathara exec database -- /bin/bash -c "TERM=linux DEBIAN_FRONTEND=noninteractive apt-get install -yq -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold'  openssh-server"
 
+#weird workaround that somehow works around error setting up systemd
+kathara exec database -- apt-get -yq -o Dpkg::Options::="--force-confold" dist-upgrade
+kathara exec database -- /bin/bash -c "TERM=linux DEBIAN_FRONTEND=noninteractive apt-get install -yq -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold'  openssh-server"
+
 echo "START SSH service"
 kathara exec database -- service ssh start
 
-echo "TEMPORARY USER for SCP to webserver"
+echo "TEMPORARY USER for SCP to copy stuff to webserver"
 kathara exec database -- useradd -m scpu
 kathara exec database -- sh -c "echo 'scpu:scppwd' |  chpasswd"
 
 kathara exec database -- cp /etc/my.cnf.d/certificates/ca.pem /home/scpu/
 kathara exec database -- cp /etc/my.cnf.d/certificates/ca-key.pem /home/scpu/
 kathara exec database -- chown -R scpu /home/scpu
+kathara exec database -- chmod 755 -R /home/scpu
 
